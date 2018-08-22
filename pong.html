@@ -16,19 +16,21 @@
 		var theObstacles = [];
 		var myPaddle;
 		var theirPaddle;
-		var theScore;
+		var theScore, myPoints = 0, theirPoints = 0;
 		var up = false;
 		var down = false;
 		var theirTopWall, theirBottomWall, myTopWall, myBottomWall, topWall, bottomWall;
+
+		var wallWidth = 5;
+		var ballSpeed = 4;
 		
 		function startGame() {
 			theBall = new component(15, 15, "black", 240, 128);
-			theBall.speedX = (Math.floor(Math.random() * 2) * 2 - 1) * 3; // -1 or 1
+			theBall.speedX = (Math.floor(Math.random() * 2) * 2 - 1) * ballSpeed; // -1 or 1
 			myPaddle = new component(10, 60, "blue", 460, 110);
 			theirPaddle = new component(10, 60, "red", 10, 110);
 			theScore = new component("30px","Consolas","black",270, 40, "text");
 
-			var wallWidth = 5;
 			var goalSize = 180;
 			theirTopWall = new component(wallWidth, (270 - goalSize) / 2, "black", 0, 0);
 			theirBottomWall = new component(wallWidth, (270 - goalSize) / 2, "black", 0, (270 - goalSize) / 2 + goalSize);
@@ -65,8 +67,6 @@
 			this.speedY = 0;
 			this.x = x;
 			this.y = y;
-			//this.gravity = 0;
-			//this.gravitySpeed = 0;
 			this.update = function() {
 				ctx = theGameArea.context;
 				if (this.type == "text") {
@@ -83,11 +83,11 @@
 				this.y += this.speedY;
 				this.hitBottom();
 				this.hitTop();
-				this.hitSides();
+				this.checkGoal();
 			}
 
 			this.hitBottom = function() {
-				var theBottom = theGameArea.canvas.height - this.height;
+				var theBottom = theGameArea.canvas.height - this.height - wallWidth;
 				if (this.y > theBottom) {
 					this.y = theBottom;
 					this.speedY = -this.speedY;
@@ -95,21 +95,27 @@
 			}
 
 			this.hitTop = function() {
-				var theTop = 0;
+				var theTop = wallWidth;
 				if (this.y < theTop) {
 					this.y = theTop;
 					this.speedY = -this.speedY;
 				}
 			}
-			this.hitSides = function() {
-				var theLeft = 0;
-				var theRight = theGameArea.canvas.width - this.width;
-				if (this.x > theRight) {
-					this.x = theRight;
-					this.speedX = -this.speedX;
-				} else if (this.x < theLeft) {
-					this.x = theLeft;
-					this.speedX = -this.speedX;
+			this.checkGoal = function() {
+				var theirGoal = 0;
+				var myGoal = theGameArea.canvas.width - this.width;
+				if (this.x > myGoal) {
+					this.x = 165;
+					this.y = 128;
+					this.speedX = ballSpeed;
+					this.speedY = 0;
+					theirPoints ++;
+				} else if (this.x < theirGoal) {
+					this.x = 300;
+					this.y = 128;
+					this.speedX = -ballSpeed;
+					this.speedY = 0;
+					myPoints ++;
 				}
 			}
 
@@ -138,18 +144,13 @@
 				|| (theBall.crashWith(theirTopWall)) || (theBall.crashWith(theirBottomWall))) {
 				theBall.speedX = -theBall.speedX;
 			}
-			if ((theBall.crashWith(topWall)) || (theBall.crashWith(bottomWall))) {
-				theBall.speedY = -theBall.speedY;
-			}
 			if (theBall.crashWith(theirPaddle)) {
 				var dist = (theirPaddle.y + 30) - (theBall.y + 7.5);
 				var speed = Math.sqrt(theBall.speedX * theBall.speedX + theBall.speedY + theBall.speedY);
 				var newAngle = dist * 1.7 / 180;
 				//console.log("distance: " + dist + ", speed: " + speed + ", newAng: " + newAngle * 180);
-				theBall.speedX = -speed * Math.cos(newAngle);
+				theBall.speedX = speed * Math.cos(newAngle);
 				theBall.speedY = -speed * Math.sin(newAngle);
-				theBall.x = theirPaddle.x + 10;
-				theBall.speedX = -theBall.speedX;
 			}
 			if (theBall.crashWith(myPaddle)) {
 				var dist = (myPaddle.y + 30) - (theBall.y + 7.5);
@@ -158,12 +159,11 @@
 				//console.log("distance: " + dist + ", speed: " + speed + ", newAng: " + newAngle * 180);
 				theBall.speedX = -speed * Math.cos(newAngle);
 				theBall.speedY = -speed * Math.sin(newAngle);
-				theBall.x = myPaddle.x - 15;
 			}
 			theGameArea.clear();
 			theGameArea.frameNo += 1;
 			
-			theScore.text="SCORE: " + 0 + " - " + 0;
+			theScore.text="SCORE: " + theirPoints + " - " + myPoints;
 			theScore.update();
 			theBall.newPos();
 			theBall.update();
