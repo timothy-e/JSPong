@@ -145,7 +145,7 @@
 				theBall.speedX = -theBall.speedX;
 			}
 			if (theBall.crashWith(theirPaddle)) {
-				if (theBall.x < theirPaddle.x + 10 - 3) {
+				if (theBall.x < theirPaddle.x + 10 - (ballSpeed + 1)) {
 					theBall.speedY = -theBall.speedY;
 				} else {
 					var dist = (theirPaddle.y + 30) - (theBall.y + 7.5);
@@ -156,7 +156,7 @@
 				}
 			}
 			if (theBall.crashWith(myPaddle)) {
-				if (theBall.x + 15 > myPaddle.x + 3) { // past (i.e. bounce off top or bottom)
+				if (theBall.x + 15 > myPaddle.x + (ballSpeed + 1)) { // past (i.e. bounce off top or bottom)
 					theBall.speedY = -theBall.speedY;
 				} else {
 					var dist = (myPaddle.y + 30) - (theBall.y + 7.5);
@@ -173,7 +173,17 @@
 			theScore.update();
 			theBall.newPos();
 			theBall.update();
+
+			// move their paddle
+			if (theBall.y < theirPaddle.y) {
+				theirPaddle.y -= 1;
+			}
+			if (theBall.y + 15 > theirPaddle.y + 60) {
+				theirPaddle.y += 1;
+			}
 			theirPaddle.update();
+
+			// move my paddle
 			if (up) {
 				myPaddle.y -= 2;
 			} else if (down) {
