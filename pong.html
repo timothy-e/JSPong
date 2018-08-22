@@ -145,20 +145,26 @@
 				theBall.speedX = -theBall.speedX;
 			}
 			if (theBall.crashWith(theirPaddle)) {
-				var dist = (theirPaddle.y + 30) - (theBall.y + 7.5);
-				var speed = Math.sqrt(theBall.speedX * theBall.speedX + theBall.speedY + theBall.speedY);
-				var newAngle = dist * 1.7 / 180;
-				//console.log("distance: " + dist + ", speed: " + speed + ", newAng: " + newAngle * 180);
-				theBall.speedX = speed * Math.cos(newAngle);
-				theBall.speedY = -speed * Math.sin(newAngle);
+				if (theBall.x < theirPaddle.x + 10 - 3) {
+					theBall.speedY = -theBall.speedY;
+				} else {
+					var dist = (theirPaddle.y + 30) - (theBall.y + 7.5);
+					var speed = Math.sqrt(theBall.speedX * theBall.speedX + theBall.speedY + theBall.speedY);
+					var newAngle = dist * 1.7 / 180;
+					theBall.speedX = speed * Math.cos(newAngle);
+					theBall.speedY = -speed * Math.sin(newAngle);
+				}
 			}
 			if (theBall.crashWith(myPaddle)) {
-				var dist = (myPaddle.y + 30) - (theBall.y + 7.5);
-				var speed = Math.sqrt(theBall.speedX * theBall.speedX + theBall.speedY + theBall.speedY);
-				var newAngle = dist * 1.7 / 180;
-				//console.log("distance: " + dist + ", speed: " + speed + ", newAng: " + newAngle * 180);
-				theBall.speedX = -speed * Math.cos(newAngle);
-				theBall.speedY = -speed * Math.sin(newAngle);
+				if (theBall.x + 15 > myPaddle.x + 3) { // past (i.e. bounce off top or bottom)
+					theBall.speedY = -theBall.speedY;
+				} else {
+					var dist = (myPaddle.y + 30) - (theBall.y + 7.5);
+					var speed = Math.sqrt(theBall.speedX * theBall.speedX + theBall.speedY + theBall.speedY);
+					var newAngle = dist * 1.7 / 180;
+					theBall.speedX = -speed * Math.cos(newAngle);
+					theBall.speedY = -speed * Math.sin(newAngle);
+				}
 			}
 			theGameArea.clear();
 			theGameArea.frameNo += 1;
