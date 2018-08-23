@@ -24,21 +24,6 @@
 		var wallWidth = 5;
 		var ballSpeed = 4;
 
-		window.addEventListener('keydown', (e) => {
-		if (!e.repeat)
-			console.log(`first keydown event. key property value is "${e.key}"`);
-		else
-			console.log(`keydown event repeats. key property value is "${e.key}"`);
-		});
-
-		window.addEventListener('input', (e) => {
-			console.log(`input event. you have just inputed "${e.data}"`);
-		});
-
-		window.addEventListener('keyup', (e) => {
-			console.log(`keyup event. key property value is "${e.key}"`);
-		});
-		
 		function startGame() {
 			theBall = new component(15, 15, "black", 240, 128);
 			theBall.speedX = (Math.floor(Math.random() * 2) * 2 - 1) * ballSpeed; // -1 or 1
@@ -214,6 +199,24 @@
 			topWall.update();
 			bottomWall.update();
 		}
+
+		window.addEventListener('keydown', (e) => {
+			if (!e.repeat) {
+				if (e.key == "ArrowUp") {
+					up = true;
+				} else if (e.key == "ArrowDown") {
+					down = true;
+				}
+			}
+		});
+
+		window.addEventListener('keyup', (e) => {
+			if (e.key == "ArrowUp") {
+				up = false;
+			} else if (e.key == "ArrowDown") {
+				down = false;
+			}
+		});
 		</script>
 		<br>
 		<br>
