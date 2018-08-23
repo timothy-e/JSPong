@@ -23,6 +23,21 @@
 
 		var wallWidth = 5;
 		var ballSpeed = 4;
+
+		window.addEventListener('keydown', (e) => {
+		if (!e.repeat)
+			console.log(`first keydown event. key property value is "${e.key}"`);
+		else
+			console.log(`keydown event repeats. key property value is "${e.key}"`);
+		});
+
+		window.addEventListener('input', (e) => {
+			console.log(`input event. you have just inputed "${e.data}"`);
+		});
+
+		window.addEventListener('keyup', (e) => {
+			console.log(`keyup event. key property value is "${e.key}"`);
+		});
 		
 		function startGame() {
 			theBall = new component(15, 15, "black", 240, 128);
@@ -184,9 +199,10 @@
 			theirPaddle.update();
 
 			// move my paddle
-			if (up) {
+			if (up && myPaddle.y > wallWidth) {
 				myPaddle.y -= 2;
-			} else if (down) {
+			} else if (down && 
+				((myPaddle.y + myPaddle.height) < (270 - wallWidth))) {
 				myPaddle.y += 2;
 			}
 			myPaddle.update();
