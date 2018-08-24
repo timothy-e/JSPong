@@ -25,9 +25,7 @@
 		var ballSpeed = 5;
 
 		var theirSpeed = 1;
-		var theirBuffer = 30;
-		var delayCounter = 0;
-		var moveDirection = 0;
+		var theirRange = 300; // distance to start checking for ball
 
 		function startGame() {
 			theBall = new component(15, 15, "black", 240, 128);
@@ -150,8 +148,6 @@
 				theBall.speedX = -theBall.speedX;
 			}
 			if (theBall.crashWith(theirPaddle)) {
-				delayCounter = 0;
-				theirBuffer = Math.random() * 20 + 10;
 				if (theBall.x < theirPaddle.x + 10 - (ballSpeed + 1)) {
 					theBall.speedY = -theBall.speedY;
 				} else {
@@ -163,7 +159,6 @@
 				}
 			}
 			if (theBall.crashWith(myPaddle)) {
-				delayCounter = 0;
 				if (theBall.x + 15 > myPaddle.x + (ballSpeed + 1)) { // past (i.e. bounce off top or bottom)
 					theBall.speedY = -theBall.speedY;
 				} else {
@@ -182,7 +177,7 @@
 			theBall.update();
 
 			// move their paddle
-			if (theBall.x < 300) {
+			if (theBall.x < theirRange) {
 				if (theBall.y < theirPaddle.y) {
 					theirPaddle.y -= theirSpeed;
 				} else if (theBall.y + 15 > theirPaddle.y + 60) {
